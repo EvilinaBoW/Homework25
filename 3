@@ -1,0 +1,419 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace ConsoleApp11
+{
+    class Program
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Выберите задание 51-75 (или 0 для выхода):");
+
+                int choice = ReadInt();
+                if (choice == 0) break;
+
+                Console.WriteLine($"\n Задание {choice} \n");
+                ExecuteTask(choice);
+                Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+                Console.ReadKey();
+            }
+        }
+
+        static int ReadInt()
+        {
+            int value;
+            while (!int.TryParse(Console.ReadLine(), out value))
+                Console.Write("Некорректный ввод. Повторите: ");
+            return value;
+        }
+
+        static void ExecuteTask(int task)
+        {
+            switch (task)
+            {
+                case 51: Task51(); break;
+                case 52: Task52(); break;
+                case 53: Task53(); break;
+                case 54: Task54(); break;
+                case 55: Task55(); break;
+                case 56: Task56(); break;
+                case 57: Task57(); break;
+                case 58: Task58(); break;
+                case 59: Task59(); break;
+                case 60: Task60(); break;
+                case 61: Task61(); break;
+                case 62: Task62(); break;
+                case 63: Task63(); break;
+                case 64: Task64(); break;
+                case 65: Task65(); break;
+                case 66: Task66(); break;
+                case 67: Task67(); break;
+                case 68: Task68(); break;
+                case 69: Task69(); break;
+                case 70: Task70(); break;
+                case 71: Task71(); break;
+                case 72: Task72(); break;
+                case 73: Task73(); break;
+                case 74: Task74(); break;
+                case 75: Task75(); break;
+                default: Console.WriteLine("Задание не реализовано"); break;
+            }
+        }
+
+        // Задание 51
+        static void Task51()
+        {
+            Func<int, int, int> operation = delegate (int a, int b)
+            {
+                return a * b + 10;
+            };
+
+            Console.WriteLine($"5 * 3 + 10 = {operation(5, 3)}");
+        }
+
+        // Задание 52
+        static void Task52()
+        {
+            List<int> numbers = new List<int> { 1, 5, 8, 12, 15, 20 };
+            Predicate<int> filter = delegate (int x)
+            {
+                return x > 10;
+            };
+
+            var result = numbers.FindAll(filter);
+            Console.WriteLine("Числа > 10: " + string.Join(", ", result));
+        }
+
+        // Задание 53
+        static void Task53()
+        {
+            List<string> words = new List<string> { "cat", "dog", "elephant", "ant" };
+            Predicate<string> finder = delegate (string s)
+            {
+                return s.StartsWith("e");
+            };
+
+            var found = words.Find(finder);
+            Console.WriteLine($"Найдено: {found ?? "ничего"}");
+        }
+
+        // Задание 54
+        static void Task54()
+        {
+            int multiplier = 7;
+            Func<int, int> scaler = delegate (int x)
+            {
+                return x * multiplier;
+            };
+
+            Console.WriteLine($"5 * 7 = {scaler(5)}");
+            multiplier = 10;
+            Console.WriteLine($"5 * 10 = {scaler(5)} (closure обновлён)");
+        }
+
+        // Задание 55
+        static void Task55()
+        {
+            Action<string> handler = delegate (string msg)
+            {
+                Console.WriteLine($"[АНОНИМ] Событие: {msg.ToUpper()}");
+            };
+
+            handler("клик по кнопке");
+        }
+
+        // Задание 56
+        static void Task56()
+        {
+            Func<string, string> transformer = delegate (string s)
+            {
+                return new string(s.Reverse().ToArray());
+            };
+
+            Console.WriteLine(transformer("привет"));
+        }
+
+        // Задание 57
+        static void Task57()
+        {
+            Predicate<string> validator = delegate (string pass)
+            {
+                return pass.Length >= 8 && pass.Any(char.IsDigit) && pass.Any(char.IsUpper);
+            };
+
+            Console.WriteLine($"Pass12345: {validator("Pass12345")}");
+            Console.WriteLine($"weak: {validator("weak")}");
+        }
+
+        // Задание 58
+        static void Task58()
+        {
+            List<string> items = new List<string> { "banana", "apple", "cherry" };
+            Comparison<string> sorter = delegate (string a, string b)
+            {
+                return a.Length.CompareTo(b.Length);
+            };
+
+            items.Sort(sorter);
+            Console.WriteLine("По длине: " + string.Join(", ", items));
+        }
+
+        // Задание 59
+        static void Task59()
+        {
+            Action<string> logger = delegate (string action)
+            {
+                Console.WriteLine($"[LOG {DateTime.Now:HH:mm:ss}] {action}");
+            };
+
+            logger("Запуск приложения");
+            logger("Загрузка данных");
+        }
+
+        // Задание 60
+        static void Task60()
+        {
+            int counter = 0;
+            Action<int> incrementer = delegate (int value)
+            {
+                counter += value;
+                Console.WriteLine($"Счётчик: {counter}");
+            };
+
+            incrementer(5);
+            incrementer(3);
+        }
+
+        // Задание 61
+        static void Task61()
+        {
+            Func<int, int> factorial = null;
+            factorial = delegate (int n)
+            {
+                if (n <= 1) return 1;
+                return n * factorial(n - 1);
+            };
+
+            Console.WriteLine($"5! = {factorial(5)}");
+        }
+
+        // Задание 62
+        static void Task62()
+        {
+            Func<string, string> formatter = delegate (string input)
+            {
+                return $"*** {input.Trim().ToUpper()} ***";
+            };
+
+            Console.WriteLine(formatter("  hello world  "));
+        }
+
+        // Задание 63
+        static void Task63()
+        {
+            Action<int> safeDivide = delegate (int x)
+            {
+                try
+                {
+                    Console.WriteLine($"Результат: {10 / x}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ОШИБКА] {ex.Message}");
+                }
+            };
+
+            safeDivide(2);
+            safeDivide(0);
+        }
+
+        // Задание 64
+        static void Task64()
+        {
+            string cache = null;
+            Func<string, string> cachedUpper = delegate (string s)
+            {
+                if (cache == null)
+                {
+                    cache = s.ToUpper();
+                    Console.WriteLine($"[КЕШ] Вычислено: {cache}");
+                }
+                else
+                {
+                    Console.WriteLine($"[КЕШ] Из кеша: {cache}");
+                }
+                return cache;
+            };
+
+            cachedUpper("hello");
+            cachedUpper("world");
+        }
+
+        // Задание 65
+        static void Task65()
+        {
+            string path = "temp.txt";
+            Action<string> fileWriter = delegate (string text)
+            {
+                File.WriteAllText(path, text);
+                Console.WriteLine($"Записано в {path}");
+            };
+
+            fileWriter("Данные из анонимного метода");
+            if (File.Exists(path)) File.Delete(path);
+        }
+
+        // Задание 66
+        static void Task66()
+        {
+            Func<string, int> parser = delegate (string input)
+            {
+                int result = 0;
+                int.TryParse(input.Trim(), out result);
+                return result;
+            };
+
+            Console.WriteLine($"\"  42  \" → {parser("  42  ")}");
+        }
+
+        // Задание 67
+        static void Task67()
+        {
+            string connection = "Server=...";
+            Action<string> dbQuery = delegate (string sql)
+            {
+                Console.WriteLine($"[DB] {connection}");
+                Console.WriteLine($"[SQL] {sql}");
+            };
+
+            dbQuery("SELECT * FROM Users WHERE Active = 1");
+        }
+
+        // Задание 68
+        static void Task68()
+        {
+            Func<Task> asyncOp = delegate
+            {
+                return Task.Run(() =>
+                {
+                    Thread.Sleep(500);
+                    Console.WriteLine("Асинхронная операция завершена");
+                });
+            };
+
+            asyncOp().Wait();
+        }
+
+        // Задание 69
+        static void Task69()
+        {
+            List<int> data = new List<int> { 10, 20, 30 };
+            Action<List<int>> traverser = delegate (List<int> list)
+            {
+                for (int i = 0; i < list.Count; i++)
+                    Console.WriteLine($"Элемент {i}: {list[i]}");
+            };
+
+            traverser(data);
+        }
+
+        // Задание 70
+        static void Task70()
+        {
+            List<string> words = new List<string> { "cat", "car", "bat", "bar" };
+            Func<List<string>, Dictionary<char, List<string>>> grouper = delegate (List<string> list)
+            {
+                var groups = new Dictionary<char, List<string>>();
+                foreach (var w in list)
+                {
+                    char key = w[0];
+                    if (!groups.ContainsKey(key)) groups[key] = new List<string>();
+                    groups[key].Add(w);
+                }
+                return groups;
+            };
+
+            var result = grouper(words);
+            foreach (var g in result)
+                Console.WriteLine($"{g.Key}: {string.Join(", ", g.Value)}");
+        }
+
+        // Задание 71
+        static void Task71()
+        {
+            int[] numbers = { 1, 2, 3, 4, 5 };
+            Func<int[], int> summer = delegate (int[] arr)
+            {
+                int sum = 0;
+                foreach (int n in arr) sum += n;
+                return sum;
+            };
+
+            Console.WriteLine($"Сумма: {summer(numbers)}");
+        }
+
+        // Задание 72
+        static void Task72()
+        {
+            DateTime baseDate = DateTime.Today;
+            Func<int, string> dateFormatter = delegate (int days)
+            {
+                return baseDate.AddDays(days).ToString("dd MMMM yyyy");
+            };
+
+            Console.WriteLine($"Через 10 дней: {dateFormatter(10)}");
+        }
+
+        // Задание 73
+        static void Task73()
+        {
+            int key = 3;
+            Func<string, string> caesar = delegate (string text)
+            {
+                return new string(text.Select(c => (char)(c + key)).ToArray());
+            };
+
+            string encrypted = caesar("abc");
+            Console.WriteLine($"Зашифровано: {encrypted}");
+        }
+
+        // Задание 74
+        static void Task74()
+        {
+            Action<List<string>> report = delegate (List<string> lines)
+            {
+                Console.WriteLine("=== ОТЧЁТ ===");
+                foreach (var line in lines)
+                    Console.WriteLine($"• {line}");
+                Console.WriteLine("==============");
+            };
+
+            report(new List<string> { "Продажи: 150", "Клиенты: 42", "Прибыль: +20%" });
+        }
+
+        // Задание 75
+        static void Task75()
+        {
+            string logFile = "app.log";
+            Action<string, string> logger = delegate (string level, string message)
+            {
+                string entry = $"[{DateTime.Now:HH:mm:ss}] [{level}] {message}";
+                Console.WriteLine(entry);
+                File.AppendAllText(logFile, entry + Environment.NewLine);
+            };
+
+            logger("INFO", "Система запущена");
+            logger("WARN", "Низкий диск");
+            if (File.Exists(logFile)) File.Delete(logFile);
+        }
+    }
+}
