@@ -1,0 +1,444 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ConsoleApp11
+{
+    class Program
+    {
+        // Задание 1
+        public delegate int BinaryOperation(int a, int b);
+
+        // Задание 3
+        public delegate void MessageDelegate(string message);
+
+        // Задание 4
+        public delegate bool NumberPredicate(int number);
+
+        // Задание 9
+        public delegate int ObjectComparer<T>(T a, T b);
+
+        public class Product
+        {
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            public int Quantity { get; set; }
+
+            public override string ToString() => $"{Name,-15} Цена: {Price,6:C} Кол-во: {Quantity,3}";
+        }
+
+        static void Main()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Выберите задание 1-25 (или 0 для выхода):");
+
+                int choice = ReadInt();
+                if (choice == 0) break;
+
+                Console.WriteLine($"\n Задание {choice} \n");
+                ExecuteTask(choice);
+                Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+                Console.ReadKey();
+            }
+        }
+
+        static int ReadInt()
+        {
+            int value;
+            while (!int.TryParse(Console.ReadLine(), out value))
+                Console.Write("Некорректный ввод. Повторите: ");
+            return value;
+        }
+
+        static void ExecuteTask(int task)
+        {
+            switch (task)
+            {
+                case 1: Task1(); break;
+                case 2: Task2(); break;
+                case 3: Task3(); break;
+                case 4: Task4(); break;
+                case 5: Task5(); break;
+                case 6: Task6(); break;
+                case 7: Task7(); break;
+                case 8: Task8(); break;
+                case 9: Task9(); break;
+                case 10: Task10(); break;
+                case 11: Task11(); break;
+                case 12: Task12(); break;
+                case 13: Task13(); break;
+                case 14: Task14(); break;
+                case 15: Task15(); break;
+                case 16: Task16(); break;
+                case 17: Task17(); break;
+                case 18: Task18(); break;
+                case 19: Task19(); break;
+                case 20: Task20(); break;
+                case 21: Task21(); break;
+                case 22: Task22(); break;
+                case 23: Task23(); break;
+                case 24: Task24(); break;
+                case 25: Task25(); break;
+                default: Console.WriteLine("Задание не реализовано"); break;
+            }
+        }
+
+        // Задание 1
+        static void Task1()
+        {
+            BinaryOperation op = (a, b) => a + b;
+            Console.WriteLine($"5 + 3 = {op(5, 3)}");
+
+            op = (a, b) => a * b;
+            Console.WriteLine($"5 * 3 = {op(5, 3)}");
+        }
+
+        // Задание 2
+        static void Task2()
+        {
+            Func<int, int, int> add = (a, b) => a + b;
+            Func<int, int, int> subtract = (a, b) => a - b;
+            Func<int, int, int> multiply = (a, b) => a * b;
+            Func<int, int, int> divide = (a, b) => b != 0 ? a / b : 0;
+
+            Console.WriteLine($"7 + 4 = {add(7, 4)}");
+            Console.WriteLine($"7 - 4 = {subtract(7, 4)}");
+            Console.WriteLine($"7 * 4 = {multiply(7, 4)}");
+            Console.WriteLine($"7 / 4 = {divide(7, 4)}");
+        }
+
+        // Задание 3
+        static void Task3()
+        {
+            Action<string> printer = msg => Console.WriteLine($"[INFO] {msg}");
+            printer("Система запущена");
+
+            MessageDelegate logger = msg => Console.WriteLine($"[LOG {DateTime.Now:HH:mm:ss}] {msg}");
+            logger("Операция выполнена");
+        }
+
+        // Задание 4
+        static void Task4()
+        {
+            Predicate<int> isPositive = x => x > 0;
+            Predicate<int> isEven = x => x % 2 == 0;
+
+            int[] numbers = { -5, 0, 3, 8, -2, 7 };
+
+            Console.WriteLine("Положительные:");
+            foreach (var n in numbers.Where(x => isPositive(x)))
+                Console.WriteLine(n);
+
+            Console.WriteLine("Четные:");
+            foreach (var n in numbers.Where(x => isEven(x)))
+                Console.WriteLine(n);
+        }
+
+        // Задание 5
+        static void Task5()
+        {
+            Action<string> print = Console.WriteLine;
+            print("Action без параметров");
+
+            Action<int, int> showSum = (a, b) => Console.WriteLine($"Сумма: {a + b}");
+            showSum(10, 20);
+
+            Action notify = null;
+            notify += () => Console.WriteLine("[EMAIL] Уведомление отправлено");
+            notify += () => Console.WriteLine("[SMS] SMS отправлено");
+            notify?.Invoke();
+        }
+
+        // Задание 6
+        static void Task6()
+        {
+            Func<string, string> toUpper = s => s.ToUpper();
+            Func<string, int> getLength = s => s.Length;
+            Func<int, string> intToStr = i => i.ToString("D3");
+
+            Console.WriteLine(toUpper("hello"));
+            Console.WriteLine(getLength("world"));
+            Console.WriteLine(intToStr(42));
+        }
+
+        // Задание 7
+        static void Task7()
+        {
+            List<int> numbers = Enumerable.Range(1, 20).ToList();
+            Func<int, bool> isPrime = n =>
+            {
+                if (n < 2) return false;
+                for (int i = 2; i <= Math.Sqrt(n); i++)
+                    if (n % i == 0) return false;
+                return true;
+            };
+
+            var primes = numbers.Where(isPrime).ToList();
+            Console.WriteLine("Простые числа: " + string.Join(", ", primes));
+        }
+
+        // Задание 8
+        static void Task8()
+        {
+            Action<string> callback = null;
+            callback += msg => Console.WriteLine($"[CALLBACK] {msg}");
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                callback?.Invoke("Асинхронная операция завершена");
+            });
+
+            Console.WriteLine("Ожидание завершения...");
+            Thread.Sleep(1500);
+        }
+
+        // Задание 9
+        static void Task9()
+        {
+            var products = new List<Product>
+            {
+                new Product { Name = "Яблоко", Price = 50m, Quantity = 100 },
+                new Product { Name = "Банан", Price = 30m, Quantity = 150 },
+                new Product { Name = "Апельсин", Price = 70m, Quantity = 80 }
+            };
+
+            Console.WriteLine("По цене (убывание):");
+            products.Sort((a, b) => b.Price.CompareTo(a.Price));
+            products.ForEach(p => Console.WriteLine(p));
+
+            Console.WriteLine("\nПо количеству (возрастание):");
+            products.Sort((a, b) => a.Quantity.CompareTo(b.Quantity));
+            products.ForEach(p => Console.WriteLine(p));
+        }
+
+        // Задание 10
+        static void Task10()
+        {
+            Func<int, int, bool> safeDivide = (a, b) =>
+            {
+                try
+                {
+                    Console.WriteLine($"Результат: {a / b}");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ОШИБКА] {ex.Message}");
+                    return false;
+                }
+            };
+
+            safeDivide(10, 2);
+            safeDivide(10, 0);
+        }
+
+        // Задание 11
+        static void Task11()
+        {
+            Func<string, string> trim = s => s.Trim();
+            Func<string, string> removeSpaces = s => s.Replace(" ", "");
+            Func<string, string> toTitleCase = s =>
+                System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s.ToLower());
+
+            string input = "  hello world  ";
+            Console.WriteLine(trim(input));
+            Console.WriteLine(removeSpaces(input));
+            Console.WriteLine(toTitleCase(input));
+        }
+
+        // Задание 12
+        static void Task12()
+        {
+            List<string> words = new List<string> { "apple", "banana", "cherry", "date" };
+            Func<string, bool> containsA = s => s.Contains('a');
+
+            var found = words.FirstOrDefault(containsA);
+            Console.WriteLine($"Найдено: {found ?? "не найдено"}");
+        }
+
+        // Задание 13
+        static void Task13()
+        {
+            Func<string, bool> isValidEmail = email =>
+                email.Contains("@") && email.Contains(".") && email.Length > 5;
+
+            Func<int, bool> isValidAge = age => age >= 0 && age <= 150;
+
+            Console.WriteLine(isValidEmail("test@example.com"));
+            Console.WriteLine(isValidEmail("invalid"));
+            Console.WriteLine(isValidAge(25));
+            Console.WriteLine(isValidAge(-5));
+        }
+
+        // Задание 14
+        static void Task14()
+        {
+            Func<Product, string> format = p => $"[ТОВАР] {p.Name} - {p.Price:C}";
+            Func<DateTime, string> dateFormat = d => d.ToString("dd.MM.yyyy HH:mm");
+
+            var product = new Product { Name = "Книга", Price = 500m };
+            Console.WriteLine(format(product));
+            Console.WriteLine(dateFormat(DateTime.Now));
+        }
+
+        // Задание 15
+        static void Task15()
+        {
+            Comparison<string> byLength = (a, b) => a.Length.CompareTo(b.Length);
+            Comparison<string> alphabetical = (a, b) => a.CompareTo(b);
+
+            var list = new List<string> { "cat", "apple", "dog", "banana" };
+            list.Sort(byLength);
+            Console.WriteLine("По длине: " + string.Join(", ", list));
+
+            list.Sort(alphabetical);
+            Console.WriteLine("По алфавиту: " + string.Join(", ", list));
+        }
+
+        // Задание 16
+        static void Task16()
+        {
+            Func<string, int> toInt = s => int.TryParse(s, out int result) ? result : 0;
+            Func<int, double> toDouble = i => i * 1.0;
+            Func<double, string> formatCurrency = d => d.ToString("C");
+
+            Console.WriteLine(toInt("123"));
+            Console.WriteLine(toDouble(5));
+            Console.WriteLine(formatCurrency(99.99));
+        }
+
+        // Задание 17
+        static void Task17()
+        {
+            List<int> numbers = Enumerable.Range(1, 10).ToList();
+            Action<int> processor = n => Console.Write($"{n * 2} ");
+            numbers.ForEach(processor);
+            Console.WriteLine();
+        }
+
+        // Задание 18
+        static void Task18()
+        {
+            Func<double, double> square = x => x * x;
+            Func<double, double> cube = x => x * x * x;
+            Func<double, double> sqrt = x => Math.Sqrt(x);
+
+            Console.WriteLine($"Квадрат 5: {square(5)}");
+            Console.WriteLine($"Куб 3: {cube(3)}");
+            Console.WriteLine($"Корень 16: {sqrt(16)}");
+        }
+
+        // Задание 19
+        static void Task19()
+        {
+            Action<int, Action<int>> dfs = null;
+            dfs = (node, visit) =>
+            {
+                visit(node);
+                if (node < 5)
+                    dfs(node + 1, visit);
+            };
+
+            Console.WriteLine("Обход дерева (0->5):");
+            dfs(0, n => Console.Write($"{n} "));
+            Console.WriteLine();
+        }
+
+        // Задание 20
+        static void Task20()
+        {
+            Func<string, Product> factory = name => new Product
+            {
+                Name = name,
+                Price = new Random().Next(10, 1000),
+                Quantity = new Random().Next(1, 100)
+            };
+
+            var p1 = factory("Телефон");
+            var p2 = factory("Ноутбук");
+            Console.WriteLine(p1);
+            Console.WriteLine(p2);
+        }
+
+        // Задание 21
+        static void Task21()
+        {
+            var cache = new Dictionary<string, string>();
+            Func<string, string> cachedToUpper = s =>
+            {
+                if (!cache.TryGetValue(s, out string result))
+                {
+                    result = s.ToUpper();
+                    cache[s] = result;
+                }
+                return result;
+            };
+
+            Console.WriteLine(cachedToUpper("hello"));
+            Console.WriteLine(cachedToUpper("hello"));
+            Console.WriteLine(cachedToUpper("world"));
+        }
+
+        // Задание 22
+        static void Task22()
+        {
+            Action<string> logger = msg => Console.WriteLine($"[LOG {DateTime.Now:HH:mm:ss}] {msg}");
+            Action<int> logNumber = n => logger($"Число: {n}");
+
+            logger("Приложение запущено");
+            logNumber(42);
+        }
+
+        // Задание 23
+        static void Task23()
+        {
+            Action delayed = () => Console.WriteLine($"[ТАЙМЕР] {DateTime.Now:HH:mm:ss} - действие выполнено");
+
+            Task.Delay(2000).ContinueWith(_ => delayed());
+            Console.WriteLine("Таймер установлен на 2 секунды...");
+            Thread.Sleep(2500);
+        }
+
+        // Задание 24
+        static void Task24()
+        {
+            Action<string> processInput = input =>
+            {
+                if (int.TryParse(input, out int num))
+                    Console.WriteLine($"Введено число: {num}");
+                else
+                    Console.WriteLine($"Введена строка: {input.ToUpper()}");
+            };
+
+            processInput("123");
+            processInput("привет");
+        }
+
+        // Задание 25
+        static void Task25()
+        {
+            var observers = new List<Action<string>>();
+
+            Action subscribe = () =>
+            {
+                observers.Add(msg => Console.WriteLine($"[Наблюдатель 1] {msg}"));
+                observers.Add(msg => Console.WriteLine($"[Наблюдатель 2] {msg}"));
+            };
+
+            Action<string> notify = msg =>
+            {
+                foreach (var observer in observers)
+                    observer(msg);
+            };
+
+            subscribe();
+            notify("Состояние изменено!");
+        }
+    }
+}
