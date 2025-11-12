@@ -1,0 +1,423 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ConsoleApp11
+{
+    internal class Program
+    {
+        public delegate void NotificationHandler(string message);
+        public delegate bool ValidationRule(string input);
+        public delegate void TaskProcessor();
+        public delegate int Operation(int x, int y);
+
+        public interface IPlugin
+        {
+            void Execute(string data);
+        }
+
+        public class LoggerPlugin : IPlugin { public void Execute(string d) => Console.WriteLine($"[PLUGIN LOG] {d}"); }
+        public class AnalyticsPlugin : IPlugin { public void Execute(string d) => Console.WriteLine($"[ANALYTICS] Анализ: {d}"); }
+        public class CachePlugin : IPlugin { public void Execute(string d) => Console.WriteLine($"[CACHE] Кеширование: {d}"); }
+
+        static void Main()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Выберите задание 26-50 (или 0 для выхода):");
+
+                int choice = ReadInt();
+                if (choice == 0) break;
+
+                Console.WriteLine($"\n Задание {choice} \n");
+                ExecuteTask(choice);
+                Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+                Console.ReadKey();
+            }
+        }
+
+        static int ReadInt()
+        {
+            int value;
+            while (!int.TryParse(Console.ReadLine(), out value))
+                Console.Write("Некорректный ввод. Повторите: ");
+            return value;
+        }
+
+        static void ExecuteTask(int task)
+        {
+            switch (task)
+            {
+                case 26: Task26(); break;
+                case 27: Task27(); break;
+                case 28: Task28(); break;
+                case 29: Task29(); break;
+                case 30: Task30(); break;
+                case 31: Task31(); break;
+                case 32: Task32(); break;
+                case 33: Task33(); break;
+                case 34: Task34(); break;
+                case 35: Task35(); break;
+                case 36: Task36(); break;
+                case 37: Task37(); break;
+                case 38: Task38(); break;
+                case 39: Task39(); break;
+                case 40: Task40(); break;
+                case 41: Task41(); break;
+                case 42: Task42(); break;
+                case 43: Task43(); break;
+                case 44: Task44(); break;
+                case 45: Task45(); break;
+                case 46: Task46(); break;
+                case 47: Task47(); break;
+                case 48: Task48(); break;
+                case 49: Task49(); break;
+                case 50: Task50(); break;
+                default: Console.WriteLine("Задание не реализовано"); break;
+            }
+        }
+
+        // Задание 26
+        static void Task26()
+        {
+            Action<string> handler = null;
+            handler += msg => Console.WriteLine($"1: {msg}");
+            handler += msg => Console.WriteLine($"2: {msg.ToUpper()}");
+            handler += msg => Console.WriteLine($"3: Длина = {msg.Length}");
+
+            handler("Привет от + оператора");
+        }
+
+        // Задание 27
+        static void Task27()
+        {
+            Action chain = null;
+            chain += () => Console.WriteLine("Шаг 1: Инициализация");
+            chain += () => Console.WriteLine("Шаг 2: Загрузка данных");
+            chain += () => Console.WriteLine("Шаг 3: Обработка");
+            chain += () => Console.WriteLine("Шаг 4: Завершение");
+
+            chain();
+        }
+
+        // Задание 28
+        static void Task28()
+        {
+            Action<string> multicast = null;
+            multicast += Console.WriteLine;
+            multicast += msg => Console.WriteLine($"[ECHO] {msg}");
+            multicast += msg => Console.WriteLine($"[LEN] {msg.Length} символов");
+
+            Console.WriteLine("Вызов многоадресного делегата:");
+            multicast("Multicast в действии");
+            Console.WriteLine($"Подписчиков: {multicast.GetInvocationList().Length}");
+        }
+
+        // Задание 29
+        static void Task29()
+        {
+            Action<string> subscribers = null;
+            Action subscribe = () =>
+            {
+                subscribers += msg => Console.WriteLine($"[A] {msg}");
+                subscribers += msg => Console.WriteLine($"[B] {msg}");
+            };
+
+            subscribe();
+            subscribers("Подписка выполнена");
+        }
+
+        // Задание 30
+        static void Task30()
+        {
+            Action<string> loggerAndEmail = null;
+            loggerAndEmail += msg => Console.WriteLine($"[LOG] {msg}");
+            loggerAndEmail += msg => Console.WriteLine($"[EMAIL] Отправлено: {msg}");
+
+            loggerAndEmail("Ошибка входа");
+        }
+
+        // Задание 31
+        static void Task31()
+        {
+            Action<string> notification = null;
+            notification += msg => Console.WriteLine($"[LOG] {msg}");
+            notification += msg => Console.WriteLine($"[EMAIL] {msg}");
+            notification += msg => Console.WriteLine($"[SMS] {msg}");
+
+            notification("Система запущена");
+            Console.WriteLine($"Подписчиков: {notification.GetInvocationList().Length}");
+
+            notification -= msg => Console.WriteLine($"[EMAIL] {msg}");
+            Console.WriteLine($"После отписки: {notification.GetInvocationList().Length}");
+            notification("После отписки");
+        }
+
+        // Задание 32
+        static void Task32()
+        {
+            Action<string> notificationSystem = null;
+            notificationSystem += msg => Console.WriteLine($"[PUSH] {msg}");
+            notificationSystem += msg => Console.WriteLine($"[EMAIL] {msg}");
+            notificationSystem += msg => Console.WriteLine($"[SMS] {msg}");
+
+            notificationSystem?.Invoke("Новое обновление!");
+        }
+
+        // Задание 33
+        static void Task33()
+        {
+            Action<string> chain = null;
+            chain += msg => Console.WriteLine("1. Валидация");
+            chain += msg => Console.WriteLine("2. Логирование");
+            chain += msg => Console.WriteLine("3. Сохранение");
+            chain += msg => Console.WriteLine("4. Уведомление");
+
+            chain("Событие в цепочке");
+        }
+
+        // Задание 34
+        static void Task34()
+        {
+            Action operations = null;
+            operations += () => Console.WriteLine("Очистка кеша");
+            operations += () => Console.WriteLine("Синхронизация БД");
+            operations += () => Console.WriteLine("Отправка отчета");
+
+            operations();
+        }
+
+        // Задание 35
+        static void Task35()
+        {
+            var obj1 = new ClassA();
+            var obj2 = new ClassB();
+            Action<string> multiClass = null;
+            multiClass += obj1.Method;
+            multiClass += obj2.Process;
+
+            multiClass("Данные из разных классов");
+        }
+
+        class ClassA { public void Method(string s) => Console.WriteLine($"[A] {s}"); }
+        class ClassB { public void Process(string s) => Console.WriteLine($"[B] {s.ToUpper()}"); }
+
+        // Задание 36
+        static void Task36()
+        {
+            Action<string> pipeline = null;
+            pipeline += msg => Console.WriteLine($"[LOG] {msg}");
+            pipeline += msg => Console.WriteLine($"[DB] Сохранено: {msg}");
+            pipeline += Console.WriteLine;
+
+            pipeline("Важные данные");
+        }
+
+        // Задание 37
+        static void Task37()
+        {
+            var listeners = new List<Action<string>>();
+            Action subscribe = () =>
+            {
+                listeners.Add(msg => Console.WriteLine($"[L1] {msg}"));
+                listeners.Add(msg => Console.WriteLine($"[L2] {msg}"));
+            };
+
+            Action<string> notify = msg =>
+            {
+                foreach (var l in listeners) l(msg);
+            };
+
+            subscribe();
+            notify("Событие для всех слушателей");
+        }
+
+        // Задание 38
+        static void Task38()
+        {
+            Action chain = null;
+            chain += () => { Console.WriteLine("Шаг 1"); throw new Exception("Ошибка!"); };
+            chain += () => Console.WriteLine("Шаг 2 - не выполнится");
+
+            try { chain(); }
+            catch (Exception ex) { Console.WriteLine($"[ОШИБКА] {ex.Message}"); }
+        }
+
+        // Задание 39
+        static void Task39()
+        {
+            Func<int, bool> step1 = x => { Console.WriteLine($"Проверка: {x}"); return x > 0; };
+            Func<int, bool> step2 = x => { Console.WriteLine($"Валидация: {x}"); return x % 2 == 0; };
+
+            Func<int, bool> combined = x => step1(x) && step2(x);
+            Console.WriteLine($"Результат: {combined(4)}");
+            Console.WriteLine($"Результат: {combined(-3)}");
+        }
+
+        // Задание 40
+        static void Task40()
+        {
+            var sync = new object();
+            Action operations = null;
+            operations += () => { lock (sync) Console.WriteLine("Синхронизированный доступ 1"); };
+            operations += () => { lock (sync) Console.WriteLine("Синхронизированный доступ 2"); };
+
+            Parallel.Invoke(operations, operations);
+        }
+
+        // Задание 41
+        static void Task41()
+        {
+            Action<Task> asyncChain = null;
+            asyncChain += async t => { await Task.Delay(500); Console.WriteLine("Асинхронный шаг 1"); };
+            asyncChain += async t => { await Task.Delay(300); Console.WriteLine("Асинхронный шаг 2"); };
+
+            var task = Task.CompletedTask;
+            asyncChain?.GetInvocationList().Cast<Action<Task>>().ToList().ForEach(a => a(task));
+            Thread.Sleep(1000);
+        }
+
+        // Задание 42
+        static void Task42()
+        {
+            Action<int> conditional = null;
+            conditional += x => { if (x > 10) Console.WriteLine($"Большое: {x}"); };
+            conditional += x => { if (x % 2 == 0) Console.WriteLine($"Четное: {x}"); };
+
+            conditional(15);
+            conditional(8);
+        }
+
+        // Задание 43
+        static void Task43()
+        {
+            Func<int, int, int> reduce = null;
+            reduce += (a, b) => a + b;
+            reduce += (a, b) => a * b;
+
+            var methods = reduce.GetInvocationList();
+            int result = 1;
+            foreach (Func<int, int, int> op in methods)
+                result = op(result, 5);
+
+            Console.WriteLine($"Накопленный результат: {result}");
+        }
+
+        // Задание 44
+        static void Task44()
+        {
+            Action<string> logStep = null;
+            logStep += s => Console.WriteLine($"[ШАГ] Начало: {s}");
+            logStep += s => Console.WriteLine($"[ШАГ] Вычисление...");
+            logStep += s => Console.WriteLine($"[ШАГ] Завершено: {s}");
+
+            logStep("Расчет суммы");
+        }
+
+        // Задание 45
+        static void Task45()
+        {
+            Action<string, IPlugin> pluginSystem = null;
+            pluginSystem += (d, p) => p.Execute(d);
+
+            var plugins = new List<IPlugin> { new LoggerPlugin(), new AnalyticsPlugin(), new CachePlugin() };
+            Action<string> executeAll = data =>
+            {
+                foreach (var p in plugins)
+                    pluginSystem?.Invoke(data, p);
+            };
+
+            executeAll("Новые данные");
+        }
+
+        // Задание 46
+        static void Task46()
+        {
+            Func<string, bool> rules = null;
+            rules += s => s.Length >= 5;
+            rules += s => s.Any(char.IsUpper);
+            rules += s => s.Any(char.IsDigit);
+
+            bool Validate(string input)
+            {
+                foreach (Func<string, bool> rule in rules.GetInvocationList())
+                    if (!rule(input)) return false;
+                return true;
+            }
+
+            Console.WriteLine($"Valid: {Validate("Pass123")}");
+            Console.WriteLine($"Invalid: {Validate("abc")}");
+        }
+
+        // Задание 47
+        static void Task47()
+        {
+            Action<string> channels = null;
+            channels += msg => Console.WriteLine($"[EMAIL] {msg}");
+            channels += msg => Console.WriteLine($"[SMS] {msg}");
+            channels += msg => Console.WriteLine($"[PUSH] {msg}");
+
+            channels("Уведомление отправлено");
+        }
+
+        // Задание 48
+        static void Task48()
+        {
+            Action<string> monitor = null;
+            monitor += method =>
+            {
+                var sw = Stopwatch.StartNew();
+                Console.WriteLine($"Выполняется: {method}");
+                Thread.Sleep(100);
+                sw.Stop();
+                Console.WriteLine($"Время: {sw.ElapsedMilliseconds}мс");
+            };
+
+            monitor("Долгая операция");
+        }
+
+        // Задание 49
+        static void Task49()
+        {
+            var cache = new Dictionary<string, string>();
+            Action<string> cachedLogger = null;
+            cachedLogger += key =>
+            {
+                if (!cache.TryGetValue(key, out string value))
+                {
+                    value = key.ToUpper();
+                    cache[key] = value;
+                    Console.WriteLine($"[CACHE MISS] {value}");
+                }
+                else
+                {
+                    Console.WriteLine($"[CACHE HIT] {value}");
+                }
+            };
+
+            cachedLogger("hello");
+            cachedLogger("hello");
+            cachedLogger("world");
+        }
+
+        // Задание 50
+        static void Task50()
+        {
+            var queue = new Queue<string>(new[] { "Задача 1", "Задача 2", "Задача 3" });
+            Action processor = null;
+
+            while (queue.Count > 0)
+            {
+                var task = queue.Dequeue();
+                processor += () => Console.WriteLine($"[ОБРАБОТКА] {task}");
+            }
+
+            processor?.Invoke();
+        }
+    }
+}
