@@ -1,0 +1,365 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
+using System.Linq.Expressions;
+
+namespace ConsoleApp11
+{
+    class Program
+    {
+        public class Product
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            public int Stock { get; set; }
+            public string Category { get; set; }
+            public DateTime AddedDate { get; set; }
+
+            public override string ToString() => $"#{Id} {Name,-20} ${Price,7:F2} ×{Stock,3} [{Category}]";
+        }
+
+        public enum Priority { Low, Medium, High, Critical }
+
+        static void Main()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Выберите задание 76-100 (или 0 для выхода):");
+
+                int choice = ReadInt();
+                if (choice == 0) break;
+
+                Console.WriteLine($"\n Задание {choice} \n");
+                ExecuteTask(choice);
+                Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+                Console.ReadKey();
+            }
+        }
+
+        static int ReadInt()
+        {
+            int value;
+            while (!int.TryParse(Console.ReadLine(), out value))
+                Console.Write("Некорректный ввод. Повторите: ");
+            return value;
+        }
+
+        static void ExecuteTask(int task)
+        {
+            switch (task)
+            {
+                case 76: Task76(); break;
+                case 77: Task77(); break;
+                case 78: Task78(); break;
+                case 79: Task79(); break;
+                case 80: Task80(); break;
+                case 81: Task81(); break;
+                case 82: Task82(); break;
+                case 83: Task83(); break;
+                case 84: Task84(); break;
+                case 85: Task85(); break;
+                case 86: Task86(); break;
+                case 87: Task87(); break;
+                case 88: Task88(); break;
+                case 89: Task89(); break;
+                case 90: Task90(); break;
+                case 91: Task91(); break;
+                case 92: Task92(); break;
+                case 93: Task93(); break;
+                case 94: Task94(); break;
+                case 95: Task95(); break;
+                case 96: Task96(); break;
+                case 97: Task97(); break;
+                case 98: Task98(); break;
+                case 99: Task99(); break;
+                case 100: Task100(); break;
+                default: Console.WriteLine("Задание не реализовано"); break;
+            }
+        }
+
+        // Задание 76
+        static void Task76()
+        {
+            Func<int, int> doubleIt = x => x * 2;
+            Console.WriteLine($"10 → {doubleIt(10)}");
+        }
+
+        // Задание 77
+        static void Task77()
+        {
+            List<int> numbers = new List<int> { 1, 3, 6, 8, 4, 9 };
+            var big = numbers.Where(x => x > 5);
+            Console.WriteLine("Больше 5: " + string.Join(", ", big));
+        }
+
+        // Задание 78
+        static void Task78()
+        {
+            Func<string, string> toUpper = s => s.ToUpper();
+            Console.WriteLine(toUpper("hello world"));
+        }
+
+        // Задание 79
+        static void Task79()
+        {
+            var products = GetSampleProducts();
+            var result = products
+                .Where(p => p.Price > 50)
+                .OrderBy(p => p.Price)
+                .Select(p => new { p.Name, p.Price });
+
+            foreach (var p in result)
+                Console.WriteLine($"{p.Name}: ${p.Price}");
+        }
+
+        // Задание 80
+        static void Task80()
+        {
+            Func<int, int, int> add = (x, y) => x + y;
+            Func<string, string, string> concat = (a, b) => a + " " + b;
+            Console.WriteLine(add(5, 7));
+            Console.WriteLine(concat("Привет", "мир"));
+        }
+
+        // Задание 81
+        static void Task81()
+        {
+            var products = GetSampleProducts();
+            var expensiveElectronics = products.Where(p => p.Category == "Electronics" && p.Price > 100);
+            foreach (var p in expensiveElectronics)
+                Console.WriteLine(p);
+        }
+
+        // Задание 82
+        static void Task82()
+        {
+            var products = GetSampleProducts();
+            var groups = products.GroupBy(p => p.Category);
+            foreach (var g in groups)
+            {
+                Console.WriteLine($"\n{g.Key}:");
+                foreach (var p in g) Console.WriteLine($"  {p.Name}");
+            }
+        }
+
+        // Задание 83
+        static void Task83()
+        {
+            var products = GetSampleProducts();
+
+            Console.WriteLine("--- Условия ---");
+            var inStock = products.Where(p => p.Stock > 0);
+            Console.WriteLine($"В наличии: {inStock.Count()}");
+
+            var cheap = products.Where(p => p.Price < 30);
+            Console.WriteLine($"Дешевле $30: {cheap.Count()}");
+
+            var allPositiveStock = products.All(p => p.Stock >= 0);
+            Console.WriteLine($"Все в наличии: {allPositiveStock}");
+
+            var hasExpensive = products.Any(p => p.Price > 500);
+            Console.WriteLine($"Есть >$500: {hasExpensive}");
+
+            var electronicsCount = products.Count(p => p.Category == "Electronics");
+            Console.WriteLine($"Электроника: {electronicsCount}");
+        }
+
+        // Задание 84
+        static void Task84()
+        {
+            var numbers = new[] { 3, 1, 4, 1, 5, 9, 2, 6 };
+            var min = numbers.Min(x => x);
+            var max = numbers.Max(x => x);
+            Console.WriteLine($"Min: {min}, Max: {max}");
+
+            var products = GetSampleProducts();
+            var cheapest = products.Aggregate((cur, next) => cur.Price < next.Price ? cur : next);
+            var mostExpensive = products.Aggregate((cur, next) => cur.Price > next.Price ? cur : next);
+            Console.WriteLine($"Самый дешёвый: {cheapest.Name}");
+            Console.WriteLine($"Самый дорогой: {mostExpensive.Name}");
+        }
+
+        // Задание 85
+        static void Task85()
+        {
+            var products = GetSampleProducts();
+            var sorted = products
+                .OrderBy(p => p.Category)
+                .ThenByDescending(p => p.Price);
+
+            foreach (var p in sorted)
+                Console.WriteLine(p);
+        }
+
+        // Задание 86
+        static void Task86()
+        {
+            Func<DateTime, string> format = d => d.ToString("dd.MM.yyyy HH:mm");
+            Func<DateTime, bool> isWeekend = d => d.DayOfWeek == DayOfWeek.Saturday || d.DayOfWeek == DayOfWeek.Sunday;
+
+            Console.WriteLine(format(DateTime.Now));
+            Console.WriteLine($"Выходной: {isWeekend(DateTime.Now)}");
+        }
+
+        // Задание 87
+        static void Task87()
+        {
+            var orders = new[]
+            {
+                new { Id = 1, Items = new[] { "A", "B" } },
+                new { Id = 2, Items = new[] { "B", "C", "D" } }
+            };
+
+            var allItems = orders.SelectMany(o => o.Items).Distinct();
+            Console.WriteLine("Все товары: " + string.Join(", ", allItems));
+        }
+
+        // Задание 88
+        static void Task88()
+        {
+            Func<string, int> toInt = s => int.Parse(s);
+            Func<int, string> toStr = i => $"#{i:D3}";
+
+            Console.WriteLine(toInt("42"));
+            Console.WriteLine(toStr(7));
+        }
+
+        // Задание 89
+        static void Task89()
+        {
+            var products = GetSampleProducts();
+            int count = products.Count(p => p.Stock > 0);
+            decimal totalValue = products.Sum(p => p.Price * p.Stock);
+            Console.WriteLine($"В наличии: {count}");
+            Console.WriteLine($"Общая стоимость: ${totalValue:F2}");
+        }
+
+        // Задание 90
+        static void Task90()
+        {
+            var priorities = Enum.GetValues(typeof(Priority)).Cast<Priority>();
+            Func<Priority, bool> isHigh = p => p == Priority.High || p == Priority.Critical;
+            var highOnes = priorities.Where(isHigh);
+            Console.WriteLine("Высокий приоритет: " + string.Join(", ", highOnes));
+        }
+
+        // Задание 91
+        static void Task91()
+        {
+            var products = GetSampleProducts();
+            var dict = products.ToDictionary(p => p.Id, p => p.Name);
+            Console.WriteLine($"ID 1: {dict[1]}");
+        }
+
+        // Задание 92
+        static void Task92()
+        {
+            var products = GetSampleProducts();
+            var filtered = products.Where(p =>
+                p.Category == "Electronics" &&
+                p.Price >= 50 &&
+                p.Price <= 200 &&
+                p.Stock > 0 &&
+                p.Name.Contains('а') || p.Name.ToLower().Contains("а")
+            );
+
+            foreach (var p in filtered)
+                Console.WriteLine(p);
+        }
+
+        // Задание 93
+        static void Task93()
+        {
+            Func<int, int> factorial = null;
+            factorial = n => n <= 1 ? 1 : n * factorial(n - 1);
+            Console.WriteLine($"5! = {factorial(5)}");
+        }
+
+        // Задание 94
+        static void Task94()
+        {
+            Action<int> safeDivide = x =>
+            {
+                try { Console.WriteLine($"10 / {x} = {10 / x}"); }
+                catch (Exception ex) { Console.WriteLine($"[ОШИБКА] {ex.Message}"); }
+            };
+
+            safeDivide(2);
+            safeDivide(0);
+        }
+
+        // Задание 95
+        static void Task95()
+        {
+            var numbers = Enumerable.Range(1, 10);
+            var squares = numbers.AsParallel().Select(x => x * x).ToList();
+            Console.WriteLine("Квадраты: " + string.Join(", ", squares));
+        }
+
+        // Задание 96
+        static void Task96()
+        {
+            var dict = new Dictionary<string, int> { ["A"] = 1, ["B"] = 2 };
+            foreach (var kv in dict.Where(kv => kv.Value > 1))
+            {
+                Console.WriteLine($"{kv.Key}: {kv.Value}");
+            }
+        }
+
+        // Задание 97
+        static void Task97()
+        {
+            // Имитация LINQ to SQL
+            var query = GetSampleProducts()
+                .Where(p => p.Price > 100)
+                .Select(p => new { p.Name, p.Price });
+
+            Console.WriteLine("SQL-подобный запрос:");
+            foreach (var p in query) Console.WriteLine(p);
+        }
+
+        // Задание 98
+        static void Task98()
+        {
+            var anon = new { Name = "Аноним", Age = 30, Active = true };
+            Console.WriteLine($"Имя: {anon.Name}, Возраст: {anon.Age}");
+        }
+
+        // Задание 99
+        static void Task99()
+        {
+            string path = "lambda_report.txt";
+            var lines = new[] { "Отчёт", "Строка 1", "Строка 2" };
+            File.WriteAllLines(path, lines.Select(l => $"[LOG] {l}"));
+            Console.WriteLine("Файл записан");
+            if (File.Exists(path)) File.Delete(path);
+        }
+
+        // Задание 100
+        static void Task100()
+        {
+            Expression<Func<int, int, int>> expr = (a, b) => a + b * 2;
+            var compiled = expr.Compile();
+            Console.WriteLine($"3 + 4 * 2 = {compiled(3, 4)}");
+
+            Console.WriteLine("Дерево:");
+            Console.WriteLine(expr);
+        }
+
+        static List<Product> GetSampleProducts() => new List<Product>
+        {
+            new Product { Id = 1, Name = "Ноутбук", Price = 1200m, Stock = 5, Category = "Electronics", AddedDate = DateTime.Today.AddDays(-10) },
+            new Product { Id = 2, Name = "Мышка", Price = 25m, Stock = 50, Category = "Electronics", AddedDate = DateTime.Today.AddDays(-5) },
+            new Product { Id = 3, Name = "Книга", Price = 15m, Stock = 100, Category = "Books", AddedDate = DateTime.Today.AddDays(-20) },
+            new Product { Id = 4, Name = "Наушники", Price = 80m, Stock = 0, Category = "Electronics", AddedDate = DateTime.Today.AddDays(-3) },
+            new Product { Id = 5, Name = "Кабель", Price = 5m, Stock = 200, Category = "Accessories", AddedDate = DateTime.Today.AddDays(-1) }
+        };
+    }
+}
